@@ -1,22 +1,523 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Прокат инструментов</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ИнструментПрокат</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --primary-color: #2C3E50; 
+            --accent-color: #3498DB;
+            --light-bg: #ECF0F1;
+            --dark-bg: #2C3E50;
+            --text-color: #2C3E50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: var(--dark-bg);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        nav a {
+            color: white;
+            margin-left: 2rem;
+            text-decoration: none;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+        }
+
+        .search-container {
+            background: white;
+            padding: 2rem;
+            margin: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-filters input,
+        .search-filters select {
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+
+        .tool-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem 2rem;
+        }
+
+        .tool-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tool-image {
+            height: 200px;
+            background: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 1.5rem;
+        }
+
+        .tool-info {
+            padding: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-price {
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background: #2980B9;
+        }
+
+        footer {
+            background: var(--dark-bg);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1001;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .profile-container {
+            display: none;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .profile-info {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .profile-tools {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tool-card .btn-profile {
+            background: #E67E22;
+        }
+
+        .tool-card .btn-profile:hover {
+            background: #D35400;
+        }
+
+        @media (max-width: 768px) {
+            .search-filters {
+                grid-template-columns: 1fr;
+            }
+            .profile-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Выберите инструмент</h1>
-    <button onclick="selectTool('Молоток')">Молоток</button>
-    <button onclick="selectTool('Отвертка')">Отвертка</button>
+    <header>
+        <div class="logo">ИнструментПрокат</div>
+        <nav>
+            <a href="#" id="homeLink">Главная</a>
+            <a href="#" id="addToolBtn">Добавить объявление</a>
+            <a href="#" id="profileLink">Профиль</a>
+        </nav>
+    </header>
+
+    <div class="search-container" id="homeContent">
+        <h2>Найдите нужный инструмент</h2>
+        <div class="search-filters">
+            <input type="text" id="searchQuery" placeholder="Поиск по названию...">
+            <select id="categoryFilter">
+                <option value="">Все категории</option>
+                <option value="электро">Электроинструменты</option>
+                <option value="ручной">Ручные инструменты</option>
+                <option value="сад">Садовая техника</option>
+            </select>
+            <input type="text" id="locationFilter" placeholder="Местоположение">
+            <input type="date" id="startDate">
+            <input type="date" id="endDate">
+        </div>
+    </div>
+
+    <div class="tool-list" id="toolList">
+        <!-- Tool cards will be inserted here -->
+    </div>
+
+    <div class="profile-container" id="profileContent">
+        <div class="profile-header">
+            <h2>Профиль пользователя</h2>
+            <button class="btn" id="editProfileBtn">Редактировать</button>
+        </div>
+        
+        <div class="profile-info">
+            <h3>Информация</h3>
+            <p><strong>Имя:</strong> <span id="profileName">Иван Иванов</span></p>
+            <p><strong>Email:</strong> <span id="profileEmail">ivan@example.com</span></p>
+            <p><strong>Телефон:</strong> <span id="profilePhone">+7 (123) 456-78-90</span></p>
+        </div>
+        
+        <div class="profile-tools">
+            <h3>Мои объявления</h3>
+            <div class="tool-list" id="profileToolList">
+                <!-- User tools will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 ИнструментПрокат. Все права защищены.</p>
+    </footer>
+
+    <!-- Modal Form -->
+    <div class="modal" id="toolModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <h2>Добавить объявление</h2>
+            <form id="toolForm">
+                <div style="margin-bottom: 1rem;">
+                    <label>Название инструмента:</label>
+                    <input type="text" id="toolName" required style="width:100%; padding:0.5rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Категория:</label>
+                    <select id="toolCategory" required style="width:100%; padding:0.5rem;">
+                        <option value="">Выберите категорию</option>
+                        <option value="электро">Электроинструменты</option>
+                        <option value="ручной">Ручные инструменты</option>
+                        <option value="сад">Садовая техника</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Описание:</label>
+                    <textarea id="toolDescription" required style="width:100%; padding:0.5rem; height:100px;"></textarea>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Цена за день:</label>
+                    <input type="number" id="toolPrice" required style="width:100%; padding:0.5rem;">
+                </div>
+                <button type="submit" class="btn">Опубликовать</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal" id="editProfileModal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeEditProfile">&times;</span>
+            <h2>Редактировать профиль</h2>
+            <form id="editProfileForm">
+                <div style="margin-bottom: 1rem;">
+                    <label>Имя:</label>
+                    <input type="text" id="editName" required style="width:100%; padding:0.5rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Email:</label>
+                    <input type="email" id="editEmail" required style="width:100%; padding:0.5rem;">
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Телефон:</label>
+                    <input type="tel" id="editPhone" required style="width:100%; padding:0.5rem;">
+                </div>
+                <button type="submit" class="btn">Сохранить</button>
+            </form>
+        </div>
+    </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
+        // Sample data
+        let tools = [
+            { id: 1, name: "Перфоратор", category: "электро", description: "Мощный перфоратор для бурения", price: 500, location: "Москва", userId: 1 },
+            { id: 2, name: "Газонокосилка", category: "сад", description: "Бензиновая газонокосилка", price: 800, location: "Санкт-Петербург", userId: 1 },
+            { id: 3, name: "Отвертка", category: "ручной", description: "Набор отверток", price: 100, location: "Екатеринбург", userId: 2 }
+        ];
 
-        function selectTool(tool) {
-            tg.sendData(tool);  // Отправляет выбор в бота
-            tg.close();  // Закрывает WebApp
+        const currentUser = {
+            id: 1,
+            name: "Иван Иванов",
+            email: "ivan@example.com",
+            phone: "+7 (123) 456-78-90"
+        };
+
+        const toolList = document.getElementById('toolList');
+        const profileToolList = document.getElementById('profileToolList');
+        const searchQuery = document.getElementById('searchQuery');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const locationFilter = document.getElementById('locationFilter');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const toolModal = document.getElementById('toolModal');
+        const editProfileModal = document.getElementById('editProfileModal');
+        const addToolBtn = document.getElementById('addToolBtn');
+        const closeModal = document.getElementById('closeModal');
+        const closeEditProfile = document.getElementById('closeEditProfile');
+        const toolForm = document.getElementById('toolForm');
+        const editProfileForm = document.getElementById('editProfileForm');
+        const homeContent = document.getElementById('homeContent');
+        const profileContent = document.getElementById('profileContent');
+        const homeLink = document.getElementById('homeLink');
+        const profileLink = document.getElementById('profileLink');
+        const editProfileBtn = document.getElementById('editProfileBtn');
+
+        function renderTools() {
+            toolList.innerHTML = '';
+            
+            const filteredTools = tools.filter(tool => {
+                const queryMatch = tool.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+                const categoryMatch = categoryFilter.value === '' || tool.category === categoryFilter.value;
+                const locationMatch = locationFilter.value === '' || tool.location.toLowerCase().includes(locationFilter.value.toLowerCase());
+                return queryMatch && categoryMatch && locationMatch;
+            });
+
+            filteredTools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-image"><i class="fas fa-tools"></i></div>
+                    <div class="tool-info">
+                        <div class="tool-title">${tool.name}</div>
+                        <div>Категория: ${tool.category}</div>
+                        <div>Местоположение: ${tool.location}</div>
+                        <div class="tool-price">${tool.price} ₽/день</div>
+                        <div>${tool.description}</div>
+                        <button class="btn" style="margin-top:1rem;">Связаться</button>
+                    </div>
+                `;
+                toolList.appendChild(card);
+            });
         }
+
+        function renderProfileTools() {
+            profileToolList.innerHTML = '';
+            
+            const userTools = tools.filter(tool => tool.userId === currentUser.id);
+            
+            if (userTools.length === 0) {
+                profileToolList.innerHTML = '<p>У вас нет активных объявлений</p>';
+                return;
+            }
+
+            userTools.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'tool-card';
+                card.innerHTML = `
+                    <div class="tool-image"><i class="fas fa-tools"></i></div>
+                    <div class="tool-info">
+                        <div class="tool-title">${tool.name}</div>
+                        <div>Категория: ${tool.category}</div>
+                        <div>Местоположение: ${tool.location}</div>
+                        <div class="tool-price">${tool.price} ₽/день</div>
+                        <div>${tool.description}</div>
+                        <button class="btn btn-profile" onclick="removeTool(${tool.id})">Удалить</button>
+                    </div>
+                `;
+                profileToolList.appendChild(card);
+            });
+        }
+
+        function showModal() {
+            toolModal.style.display = 'block';
+        }
+
+        function hideModal() {
+            toolModal.style.display = 'none';
+            toolForm.reset();
+        }
+
+        function showEditProfileModal() {
+            editProfileModal.style.display = 'block';
+            document.getElementById('editName').value = currentUser.name;
+            document.getElementById('editEmail').value = currentUser.email;
+            document.getElementById('editPhone').value = currentUser.phone;
+        }
+
+        function hideEditProfileModal() {
+            editProfileModal.style.display = 'none';
+        }
+
+        function switchToHome() {
+            homeContent.style.display = 'block';
+            profileContent.style.display = 'none';
+        }
+
+        function switchToProfile() {
+            homeContent.style.display = 'none';
+            profileContent.style.display = 'block';
+            renderProfileTools();
+        }
+
+        function removeTool(id) {
+            tools = tools.filter(tool => tool.id !== id);
+            renderProfileTools();
+        }
+
+        addToolBtn.addEventListener('click', showModal);
+        closeModal.addEventListener('click', hideModal);
+        closeEditProfile.addEventListener('click', hideEditProfileModal);
+        editProfileBtn.addEventListener('click', showEditProfileModal);
+        window.addEventListener('click', (e) => {
+            if (e.target === toolModal) hideModal();
+            if (e.target === editProfileModal) hideEditProfileModal();
+        });
+
+        toolForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newTool = {
+                id: Date.now(),
+                name: document.getElementById('toolName').value,
+                category: document.getElementById('toolCategory').value,
+                description: document.getElementById('toolDescription').value,
+                price: parseInt(document.getElementById('toolPrice').value),
+                location: locationFilter.value || 'Не указано',
+                userId: currentUser.id
+            };
+            tools.push(newTool);
+            hideModal();
+            renderTools();
+        });
+
+        editProfileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            currentUser.name = document.getElementById('editName').value;
+            currentUser.email = document.getElementById('editEmail').value;
+            currentUser.phone = document.getElementById('editPhone').value;
+            updateProfileInfo();
+            hideEditProfileModal();
+        });
+
+        function updateProfileInfo() {
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            document.getElementById('profilePhone').textContent = currentUser.phone;
+        }
+
+        searchQuery.addEventListener('input', renderTools);
+        categoryFilter.addEventListener('change', renderTools);
+        locationFilter.addEventListener('input', renderTools);
+
+        homeLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToHome();
+        });
+
+        profileLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToProfile();
+        });
+
+        // Initial render
+        renderTools();
+        updateProfileInfo();
     </script>
 </body>
 </html>
