@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Прокат инструментов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+    <h1>Выберите инструмент</h1>
+    <button onclick="selectTool('Молоток')">Молоток</button>
+    <button onclick="selectTool('Отвертка')">Отвертка</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        function selectTool(tool) {
+            tg.sendData(tool);  // Отправляет выбор в бота
+            tg.close();  // Закрывает WebApp
+        }
+    </script>
+</body>
+</html>
